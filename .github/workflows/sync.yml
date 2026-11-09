@@ -1,0 +1,36 @@
+name: Sync Upstream
+
+on:
+  # 1. 定时自动同步：这里设置的是每天北京时间早上 8:00（UTC 0点）自动运行一次
+  schedule:
+    - cron: '0 0 * * *'
+    
+  # 2. 允许手动触发：你随时可以在 GitHub 网页端手动点按钮同步
+  workflow_dispatch:
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # 赋予写入权限，允许 Action 往你的仓库推送代码
+
+    steps:
+      # 第一步：检出你自己的仓库代码
+      - name: Checkout target repo
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+
+      # 第二步：配置 Git 机器人身份
+      - name: Set Git Identity
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+      # 第三步：添加上游官方仓库并强制同步覆盖到 main 分支
+      - name: Pull and Push Upstream Changes
+        run: |
+          git remote add upstream https://github.com/mtvpls/MoonTVPlus.git
+          git fetch upstream
+          git reset --hard upstream/main
+          git push origin main --force
