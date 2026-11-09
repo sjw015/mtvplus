@@ -3,7 +3,7 @@ name: Sync Upstream
 on:
   # 1. 定时自动同步：这里设置的是每天北京时间早上 8:00（UTC 0点）自动运行一次
   schedule:
-    - cron: '0 0 * * *'
+    - cron: '0 0 * * 1'
     
   # 2. 允许手动触发：你随时可以在 GitHub 网页端手动点按钮同步
   workflow_dispatch:
